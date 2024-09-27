@@ -49,7 +49,7 @@ namespace CCPos.Forms
 
         public void CheckExistingSplits()
         {
-            sql = $"select memberID MemberID, ps.itemID ItemID, p.product_name Item, price Price, qty Qty, isSplit Split from cc_order_payment_split ps inner join purchase p on ps.itemID = p.product_id where ps.orderID = {_orderID}";
+            sql = $"select memberID MemberID, ps.itemID ItemID, s.Description_2 Item, price Price, qty Qty, isSplit Split from wiz_cc_order_payment_split ps inner join StkItem s on ps.itemID = s.StockLink where ps.orderID = {_orderID}";
 
             existingSplitPaymentDetails = _commonFunctions.LoadDatatable(sql);
         }
@@ -89,8 +89,7 @@ namespace CCPos.Forms
 
         public void LoadMembers()
         {
-            // TODO: update orderID in guest table after order booking
-            sql = $"select g.guestID MemberID, c.name Member, g.wipOrderID OrderID, CAST(0 As INT) SplitQty from cc_table_guests g inner join tbl_customer c on c.id = g.guestID where g.wipOrderID = {_orderID}";
+            sql = $"select g.guestID MemberID, c.Name Member, g.wipOrderID OrderID, CAST(0 As INT) SplitQty from wiz_cc_table_guests g inner join Client c on c.DCLink = g.guestID where g.orderID = {_orderID}";
             members = _commonFunctions.LoadDatatable(sql);
 
             columnsToDisplay = new string[] { "MemberID", "Member", "SplitQty", };
@@ -166,7 +165,7 @@ namespace CCPos.Forms
 
                 //TODO: Fix discount in payments table
                 // Insert to split payments table
-                sql = $"INSERT INTO cc_order_payment_split (orderID, itemID, memberID, price, qty, itemTotal, discount, taxVAT, taxSC, taxCL, taxTotal, isSplit) VALUES ({_orderID}, {productID}, {memberID}, {price}, {qty}, {itemTotal}, {0}, {taxVAT}, {taxSC}, {taxCL}, {taxVAT + taxSC + taxCL}, '{isSplit}');";
+                sql = $"INSERT INTO wiz_cc_order_payment_split (orderID, itemID, memberID, price, qty, itemTotal, discount, taxVAT, taxSC, taxCL, taxTotal, isSplit) VALUES ({_orderID}, {productID}, {memberID}, {price}, {qty}, {itemTotal}, {0}, {taxVAT}, {taxSC}, {taxCL}, {taxVAT + taxSC + taxCL}, '{isSplit}');";
                 success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
             }
         }

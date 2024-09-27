@@ -144,11 +144,11 @@ namespace CCPos
         {
             if (_orderID != 0)
             {
-                sql = $"select o.orderID OrderID, o.customerID CustomerID, o.tableID TableID, d.itemID ProductID, p.product_name Item, d.price Price, d.qty Qty, d.discount Discount, p.taxapply Taxable, d.taxVAT VAT, d.taxSC ServiceCharge, d.taxCL CateringLevy, d.itemTotal ItemTotal, d.taxTotal TaxTotal, d.isVoid, ISNULL(d.course, 0) Course, d.hasModifier M, d.hasAddOn A, d.hasInstruction I from cc_order o inner join cc_order_details d on o.orderID = d.orderID inner join purchase p on p.product_id = d.itemID where o.orderID = {_orderID} order by d.course;";
+                sql = $"select o.orderID OrderID, o.customerID CustomerID, o.tableID TableID, d.itemID ProductID, p.Description_2 Item, d.price Price, d.qty Qty, d.discount Discount, CAST(1 AS INT) Taxable, d.taxVAT VAT, d.taxSC ServiceCharge, d.taxCL CateringLevy, d.itemTotal ItemTotal, d.taxTotal TaxTotal, d.isVoid, ISNULL(d.course, 0) Course, d.hasModifier M, d.hasAddOn A, d.hasInstruction I from wiz_cc_order o inner join wiz_cc_order_details d on o.orderID = d.orderID inner join StkItem p on p.StockLink = d.itemID where o.orderID = {_orderID} order by d.course;";
             }
             else if (_wipOrderID != 0)
             {
-                sql = $"select o.orderID OrderID, o.customerID CustomerID, o.tableID TableID, d.itemID ProductID, p.product_name Item, d.price Price, d.qty Qty, d.discount Discount, p.taxapply Taxable, d.taxVAT VAT, d.taxSC ServiceCharge, d.taxCL CateringLevy, d.itemTotal ItemTotal, d.taxTotal TaxTotal, d.isVoid, ISNULL(d.course, 0) Course, d.hasModifier M, d.hasAddOn A, d.hasInstruction I from cc_wip_order o inner join cc_wip_order_details d on o.orderID = d.orderID inner join purchase p on p.product_id = d.itemID where o.orderID = {_wipOrderID} order by d.course;";
+                sql = $"select o.orderID OrderID, o.customerID CustomerID, o.tableID TableID, d.itemID ProductID, p.Description_2 Item, d.price Price, d.qty Qty, d.discount Discount, CAST(1 AS INT) Taxable, d.taxVAT VAT, d.taxSC ServiceCharge, d.taxCL CateringLevy, d.itemTotal ItemTotal, d.taxTotal TaxTotal, d.isVoid, ISNULL(d.course, 0) Course, d.hasModifier M, d.hasAddOn A, d.hasInstruction I from wiz_cc_wip_order o inner join wiz_cc_wip_order_details d on o.orderID = d.orderID inner join StkItem p on p.StockLink = d.itemID where o.orderID = {_wipOrderID} order by d.course;";
             }
 
             orderDetails = _commonFunctions.LoadDatatable(sql);
@@ -160,31 +160,35 @@ namespace CCPos
             if (foundRows.Length > 1)
             {
                 int lastCourse = -1;
-                int courseIndexOffset = 0;
 
                 for (int i = 0; i < foundRows.Length; i++)
                 {
-                    //int currentCourse = Convert.ToInt16(foundRows[i]["Course"]);
-                    course = Convert.ToInt16(foundRows[i]["Course"]);
+                    // Get the current course value
+                    int currentCourse = Convert.ToInt16(foundRows[i]["Course"]);
 
-                    // Check if it's a new course
-                    if (course != lastCourse)
+                    // Check if it's a new course (different from the last one)
+                    if (currentCourse != lastCourse)
                     {
-                        lastCourse = course;
+                        lastCourse = currentCourse;
 
                         // Create a new row for the course header
                         DataRow newCourseRow = orderDetails.NewRow();
-                        newCourseRow["Item"] = $"Course {course}";
-                        newCourseRow["Course"] = course;
+                        newCourseRow["Item"] = $"Course {currentCourse}";
+                        newCourseRow["Course"] = currentCourse;
 
-                        // Determine the index to insert the new row
-                        int rowIndexToInsert = orderDetails.Rows.IndexOf(foundRows[i]) + courseIndexOffset;
+                        // Insert the new row at the correct index
+                        int rowIndexToInsert;
 
-                        // Insert the new row at the calculated position
+                        if (i == 0)
+                        {
+                            rowIndexToInsert = 0;
+                        }
+                        else
+                        {
+                            rowIndexToInsert = orderDetails.Rows.IndexOf(foundRows[i]);
+                        }
+
                         orderDetails.Rows.InsertAt(newCourseRow, rowIndexToInsert);
-
-                        // Update the index offset as we've added a new row
-                        courseIndexOffset++;
                     }
                 }
             }
@@ -219,7 +223,15 @@ namespace CCPos
 
         public void FetchTableDetails()
         {
-            sql = $"SELECT CONCAT(t.id, '-', ta.id) UniqueTableID, t.id TableID, t.tablename TableName, t.seatqty Capacity, ta.id LocationID, ta.branchname LocationName , ta.imagename Image FROM tbl_tablezone t CROSS JOIN tbl_terminallocation ta where ta.id = {_locationID} and t.id = {_branchTableID};";
+            //sql = $"SELECT CONCAT(t.id, '-', ta.id) UniqueTableID, t.id TableID, t.tablename TableName, t.seatqty Capacity, ta.id LocationID, ta.branchname LocationName , ta.imagename Image FROM tbl_tablezone t CROSS JOIN tbl_terminallocation ta where ta.id = {_locationID} and t.id = {_branchTableID};";
+            if (_wipOrderID == 0)
+            {
+                sql = $"select t.tableID TableID, t.tableName TableName, w.Name LocationName, o.bookedCapacity, t.imageName Image from wiz_cc_tablemst t inner join wiz_cc_order o on o.tableID = t.tableID inner join WhseMst w on w.WhseLink = t.locationID where o.orderID = {_orderID}";
+            }
+            else if (_orderID == 0)
+            {
+                sql = $"select t.tableID TableID, t.tableName TableName, w.Name LocationName, o.bookedCapacity, t.imageName Image from wiz_cc_tablemst t inner join wiz_cc_wip_order o on o.tableID = t.tableID inner join WhseMst w on w.WhseLink = t.locationID where o.orderID = {_wipOrderID}";
+            }
             tables = _commonFunctions.LoadDatatable(sql);
 
             if (tables != null & _locationID != 0)
@@ -235,7 +247,8 @@ namespace CCPos
         {
             if (_customerID != 0)
             {
-                sql = $"select id MemberID, Name, memberNo MemberNo from tbl_customer c where c.id = {_customerID};";
+                //sql = $"select id MemberID, Name, memberNo MemberNo from tbl_customer c where c.id = {_customerID};";
+                sql = $"select c.DCLink MemberID, c.Name Name, c.Account MemberNo from Client c where c.DCLink = {_customerID};";
                 selectedCustomer = _commonFunctions.LoadDatatable(sql);
 
                 if (selectedCustomer != null)
@@ -254,11 +267,13 @@ namespace CCPos
         public void LoadProductButtons()
         {
             // Get the products from the database
-            sql = "select CAST(p.product_id AS BIGINT) AS ProductID, p.product_name Item, c.id CategoryID, c.category_name CategoryName, p.retail_price Price, 1 Qty, p.discount Discount, p.taxapply Taxable, p.imagename Image from purchase p inner join tbl_category c on c.category_name = p.category";
+            //sql = "select CAST(p.product_id AS BIGINT) AS ProductID, p.product_name Item, c.id CategoryID, c.category_name CategoryName, p.retail_price Price, 1 Qty, p.discount Discount, p.taxapply Taxable, p.imagename Image from purchase p inner join tbl_category c on c.category_name = p.category";
+            sql = "select s.StockLink ProductID, s.Code ItemCode, s.Description_2 Item, sd.ItemCategoryID CategoryID, c.cCategoryDescription CategoryName, s.ServiceItem, p.fInclPrice Price, CAST(1 AS INT) Qty, CAST(0 AS INT) Discount, i.imagename Image, p.iWarehouseID, w.Code, W.Name Location from stkItem s inner join _etblStockDetails sd on sd.StockID = s.StockLink inner join _etblStockCategories c on c.idStockCategories = sd.ItemCategoryID inner join _etblPriceListPrices p on s.StockLink = p.iStockID left join wiz_cc_stkitem_info i on i.stocklink = s.StockLink inner join WhseMst w on w.WhseLink = p.iWarehouseID";
             products = _commonFunctions.LoadDatatable(sql);
 
             int width = (flpProduct.Size.Width / 5) - 10;
-            buttonInfo = $"Item|ProductID|{width}|100|true";
+            //TODO: make image presence dynamic from settings
+            buttonInfo = $"Item|ProductID|{width}|100|false";
 
             // Load buttons
             _commonFunctions.LoadDynamicButtons(products, flpProduct, ProductButton_Click, buttonInfo);
@@ -267,7 +282,8 @@ namespace CCPos
         public void LoadFilteredProductButtons()
         {
             int width = (flpProduct.Size.Width / 5) - 10;
-            buttonInfo = $"Item|ProductID|{width}|100|true";
+            //TODO: make image dynamic
+            buttonInfo = $"Item|ProductID|{width}|100|false";
             // Load buttons
             _commonFunctions.LoadDynamicButtons(filteredProducts, flpProduct, ProductButton_Click, buttonInfo);
 
@@ -276,7 +292,8 @@ namespace CCPos
         public void LoadCategoryButtons()
         {
             // Get the products from the database
-            sql = "select id CategoryID, category_name CategoryName from tbl_category;";
+            //sql = "select id CategoryID, category_name CategoryName from tbl_category;";
+            sql = "select idStockCategories CategoryID, cCategoryDescription CategoryName from _etblStockCategories";
             categories = _commonFunctions.LoadDatatable(sql);
 
             int width = (flpCategory.Size.Width / 5) - 5;
@@ -342,7 +359,7 @@ namespace CCPos
                     orderRow["TaxTotal"] = Convert.ToInt32(orderRow["VAT"]) + Convert.ToInt32(orderRow["ServiceCharge"]) + Convert.ToInt32(orderRow["CateringLevy"]);
 
                     // Insert row to cc_wip_table
-                    sql = $"INSERT INTO cc_wip_order_details (orderID, itemID, qty, course, price, itemTotal, discount, taxVAT, taxSC, taxCL, taxTotal) VALUES ({_wipOrderID}, '{Convert.ToInt64(orderRow["ProductID"])}', {Convert.ToInt32(orderRow["Qty"])}, {course}, {Convert.ToDecimal(orderRow["Price"])}, {Convert.ToDecimal(orderRow["ItemTotal"])}, {Convert.ToDecimal(orderRow["Discount"])}, {Convert.ToDecimal(orderRow["VAT"])}, {Convert.ToDecimal(orderRow["ServiceCharge"])}, {Convert.ToDecimal(orderRow["CateringLevy"])}, {Convert.ToDecimal(orderRow["TaxTotal"])});";
+                    sql = $"INSERT INTO wiz_cc_wip_order_details (orderID, itemID, qty, course, price, itemTotal, discount, taxVAT, taxSC, taxCL, taxTotal) VALUES ({_wipOrderID}, '{Convert.ToInt64(orderRow["ProductID"])}', {Convert.ToInt32(orderRow["Qty"])}, {course}, {Convert.ToDecimal(orderRow["Price"])}, {Convert.ToDecimal(orderRow["ItemTotal"])}, {Convert.ToDecimal(orderRow["Discount"])}, {Convert.ToDecimal(orderRow["VAT"])}, {Convert.ToDecimal(orderRow["ServiceCharge"])}, {Convert.ToDecimal(orderRow["CateringLevy"])}, {Convert.ToDecimal(orderRow["TaxTotal"])});";
 
                     success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
 
@@ -377,7 +394,7 @@ namespace CCPos
                     tbTotalPayable.Text = totalPayable.ToString();
 
                     // Update wip_order table
-                    sql = $"UPDATE cc_wip_order SET orderTotal = {total}, taxTotal = {tax}, totalPayable = {totalPayable} WHERE orderID = {_wipOrderID};";
+                    sql = $"UPDATE wiz_cc_wip_order SET orderTotal = {total}, taxTotal = {tax}, totalPayable = {totalPayable} WHERE orderID = {_wipOrderID};";
 
                     success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
 
@@ -431,13 +448,39 @@ namespace CCPos
             filteredProducts.Columns.Add("Image", typeof(byte[]));
         }
 
-        
 
-
-        private void ProcessOrder()
+        private void ProcessOrdersWithTransaction()
         {
-            sql = $"INSERT INTO cc_order (customerID, tableID, orderTotal, taxTotal, totalPayable, orderTime, orderStatus, agentID) OUTPUT INSERTED.orderID SELECT customerID, tableID, orderTotal, taxTotal, totalPayable, orderTime, 'Preparation' orderStatus, agentID FROM cc_wip_order WHERE orderID = {_wipOrderID};";
-            mainorderID = _commonFunctions.ExecuteScalarAndReturnId(sql);
+            // Start a transaction
+            using (SqlConnection conn = new SqlConnection(_commonFunctions.GetConnectionString()))
+            {
+                conn.Open();
+                SqlTransaction transaction = conn.BeginTransaction();
+
+                try
+                {
+                    // Clear orders from the kitchen screen
+                    ProcessOrder(transaction);
+
+                    // Commit transaction if all succeeded
+                    transaction.Commit();
+                    MessageBox.Show("Order processed successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                catch (Exception ex)
+                {
+                    // Rollback transaction in case of an error
+                    transaction.Rollback();
+                    MessageBox.Show($"Transaction failed: {ex.Message}", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+        }
+
+
+        private void ProcessOrder(SqlTransaction transaction)
+        {
+            sql = $"INSERT INTO wiz_cc_order (customerID, tableID, bookedCapacity, orderTotal, taxTotal, totalPayable, orderTime, orderStatus, agentID) OUTPUT INSERTED.orderID SELECT customerID, tableID, bookedCapacity, orderTotal, taxTotal, totalPayable, orderTime, 'Preparation' orderStatus, agentID FROM wiz_cc_wip_order WHERE orderID = {_wipOrderID};";
+            //mainorderID = _commonFunctions.ExecuteScalarAndReturnId(sql);
+            mainorderID = _commonFunctions.ExecuteScalarWithTransactionReturnID(sql, transaction);
 
             if (mainorderID != 0)
             {
@@ -447,19 +490,26 @@ namespace CCPos
                 {
                     if (orderRow["Item"].ToString().StartsWith("Course ")) { continue; };
 
-                    sql = $"INSERT INTO cc_order_details (orderID, itemID, qty, course, price, itemTotal, discount, taxVAT, taxSC, taxCL, taxTotal, isVoid, hasModifier, modifier, hasAddOn, addOn, hasInstruction, instruction) SELECT orderID, itemID, qty, course, price, itemTotal, discount, taxVAT, taxSC, taxCL, taxTotal, isVoid, hasModifier, modifier, hasAddOn, addOn, hasInstruction, instruction FROM cc_wip_order_details WHERE orderID = {_wipOrderID} and itemID = {Convert.ToInt64(orderRow["ProductID"])};";
+                    sql = $"INSERT INTO wiz_cc_order_details (orderID, itemID, qty, course, price, itemTotal, discount, taxVAT, taxSC, taxCL, taxTotal, isVoid, hasModifier, modifier, hasAddOn, addOn, hasInstruction, instruction) SELECT orderID, itemID, qty, course, price, itemTotal, discount, taxVAT, taxSC, taxCL, taxTotal, isVoid, hasModifier, modifier, hasAddOn, addOn, hasInstruction, instruction FROM wiz_cc_wip_order_details WHERE orderID = {_wipOrderID} and itemID = {Convert.ToInt64(orderRow["ProductID"])};";
 
-                    success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
+                    //success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
+                    success = _commonFunctions.ExecuteScalarWithTransaction(sql, transaction);
                 }
 
                 // Delete Details and Master from wip tables
                 string itemIDs = string.Join(",", orderDetails.AsEnumerable().Where(row => row.Field<long?>("ProductID") != null).Select(row => row.Field<long>("ProductID").ToString()));
 
-                sql = $"DELETE FROM cc_wip_order_details WHERE orderID = {_wipOrderID} AND itemID IN ({itemIDs});";
-                success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
+                sql = $"DELETE FROM wiz_cc_wip_order_details WHERE orderID = {_wipOrderID} AND itemID IN ({itemIDs});";
+                //success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
+                success = _commonFunctions.ExecuteScalarWithTransaction(sql, transaction);
 
-                sql = $"DELETE FROM cc_wip_order WHERE orderID = {_wipOrderID};";
-                success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
+                sql = $"DELETE FROM wiz_cc_wip_order WHERE orderID = {_wipOrderID};";
+                //success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
+                success = _commonFunctions.ExecuteScalarWithTransaction(sql, transaction);
+
+                //Update guests table 
+                sql = $"update wiz_cc_table_guests set orderID = {mainorderID} where wipOrderID = {_wipOrderID}";
+                success = _commonFunctions.ExecuteScalarWithTransaction(sql, transaction);
 
                 MessageBox.Show("Order posted successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -468,7 +518,6 @@ namespace CCPos
                 MessageBox.Show("Operation failed. Please try again.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
 
         private void frmSales_Load(object sender, EventArgs e)
         {
@@ -530,7 +579,7 @@ namespace CCPos
             {
                 orderDetails.Rows.InsertAt(blankRow, 0);
 
-                sql = $"update cc_wip_order_details set course = 1 where orderID = {_wipOrderID};";
+                sql = $"update wiz_cc_wip_order_details set course = 1 where orderID = {_wipOrderID};";
                 success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
             }
             else
@@ -591,7 +640,7 @@ namespace CCPos
                         int currentCourse = Convert.ToInt32(orderDetails.Rows[rowIndex - 1]["Item"].ToString().Split(' ')[1]);
                         long productID = Convert.ToInt64(orderDetails.Rows[rowIndex]["ProductID"]);
 
-                        sql = $"update cc_wip_order_details set course = {currentCourse - 1} where orderID = {_wipOrderID} and itemID = {productID}";
+                        sql = $"update wiz_cc_wip_order_details set course = {currentCourse - 1} where orderID = {_wipOrderID} and itemID = {productID}";
                         success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
 
                         // Swap the selected row with the row above
@@ -618,7 +667,7 @@ namespace CCPos
                         int currentCourse = Convert.ToInt32(orderDetails.Rows[rowIndex + 1]["Item"].ToString().Split(' ')[1]);
                         long productID = Convert.ToInt64(orderDetails.Rows[rowIndex]["ProductID"]);
 
-                        sql = $"update cc_wip_order_details set course = {currentCourse} where orderID = {_wipOrderID} and itemID = {productID}";
+                        sql = $"update wiz_cc_wip_order_details set course = {currentCourse} where orderID = {_wipOrderID} and itemID = {productID}";
                         success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
 
                         SwapRows(rowIndex, rowIndex + 1);
@@ -664,7 +713,7 @@ namespace CCPos
                 {
                     selectedRow["isVoid"] = true;
 
-                    sql = $"UPDATE cc_order_details SET isVoid = 1 WHERE orderID = {_orderID} and itemID = {selectedRow["productID"].ToString()}";
+                    sql = $"UPDATE wiz_cc_order_details SET isVoid = 1 WHERE orderID = {_orderID} and itemID = {selectedRow["productID"].ToString()}";
                     success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
 
                     MessageBox.Show("Order voided successfully.");
@@ -696,7 +745,7 @@ namespace CCPos
 
         private void mtBook_Click(object sender, EventArgs e)
         {
-            ProcessOrder();
+            ProcessOrdersWithTransaction();
         }
 
         private void dgvOrdersItems_CellValueChanged(object sender, DataGridViewCellEventArgs e)
@@ -732,7 +781,7 @@ namespace CCPos
                     decimal taxVAT = itemTotal * Convert.ToDecimal(0.16);
 
                     // Update wip_details tbl
-                    sql = $"UPDATE cc_wip_order_details SET qty = {editedQty}, itemTotal = {price * editedQty}, taxVAT = {taxVAT}, taxSC = {taxSC}, taxCL = {taxCL}, taxTotal = {taxSC + taxCL + taxVAT} WHERE orderID = {_wipOrderID} and itemID = {productId}";
+                    sql = $"UPDATE wiz_cc_wip_order_details SET qty = {editedQty}, itemTotal = {price * editedQty}, taxVAT = {taxVAT}, taxSC = {taxSC}, taxCL = {taxCL}, taxTotal = {taxSC + taxCL + taxVAT} WHERE orderID = {_wipOrderID} and itemID = {productId}";
 
                     success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
 
@@ -773,7 +822,7 @@ namespace CCPos
                 tbTotalPayable.Text = totalPayable.ToString();
 
                 // Update wip_order table
-                sql = $"UPDATE cc_wip_order SET orderTotal = {total}, taxTotal = {tax}, totalPayable = {totalPayable} WHERE orderID = {_wipOrderID};";
+                sql = $"UPDATE wiz_cc_wip_order SET orderTotal = {total}, taxTotal = {tax}, totalPayable = {totalPayable} WHERE orderID = {_wipOrderID};";
 
                 success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
 

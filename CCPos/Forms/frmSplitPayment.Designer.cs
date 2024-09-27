@@ -34,6 +34,9 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.groupBox3 = new System.Windows.Forms.GroupBox();
             this.dgvPayment = new System.Windows.Forms.DataGridView();
+            this.Member = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Due = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.Paid = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.dgvSummary = new System.Windows.Forms.DataGridView();
             this.PaymentName = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -58,9 +61,9 @@
             this.mtCancel = new MetroFramework.Controls.MetroTile();
             this.mtAdd = new MetroFramework.Controls.MetroTile();
             this.metroButton2 = new MetroFramework.Controls.MetroButton();
-            this.Member = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Due = new System.Windows.Forms.DataGridViewTextBoxColumn();
-            this.Paid = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.cboWallet = new System.Windows.Forms.ComboBox();
+            this.tbWalletBalance = new System.Windows.Forms.TextBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.panel1.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox3.SuspendLayout();
@@ -99,7 +102,7 @@
             this.panel1.Controls.Add(this.groupBox1);
             this.panel1.Location = new System.Drawing.Point(26, 73);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(1073, 439);
+            this.panel1.Size = new System.Drawing.Size(1039, 520);
             this.panel1.TabIndex = 14;
             // 
             // groupBox1
@@ -113,7 +116,7 @@
             this.groupBox1.Font = new System.Drawing.Font("Segoe UI Semibold", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.groupBox1.Location = new System.Drawing.Point(0, 0);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(1073, 439);
+            this.groupBox1.Size = new System.Drawing.Size(1039, 520);
             this.groupBox1.TabIndex = 11;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "SPLIT PAYMENT";
@@ -124,9 +127,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox3.Controls.Add(this.dgvPayment);
             this.groupBox3.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox3.Location = new System.Drawing.Point(746, 222);
+            this.groupBox3.Location = new System.Drawing.Point(712, 222);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(310, 205);
+            this.groupBox3.Size = new System.Drawing.Size(310, 286);
             this.groupBox3.TabIndex = 5;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Payments";
@@ -145,8 +148,29 @@
             this.dgvPayment.RowHeadersWidth = 51;
             this.dgvPayment.RowTemplate.Height = 35;
             this.dgvPayment.RowTemplate.ReadOnly = true;
-            this.dgvPayment.Size = new System.Drawing.Size(304, 177);
+            this.dgvPayment.Size = new System.Drawing.Size(304, 258);
             this.dgvPayment.TabIndex = 2;
+            // 
+            // Member
+            // 
+            this.Member.HeaderText = "Member";
+            this.Member.MinimumWidth = 6;
+            this.Member.Name = "Member";
+            this.Member.ReadOnly = true;
+            // 
+            // Due
+            // 
+            this.Due.HeaderText = "Due";
+            this.Due.MinimumWidth = 6;
+            this.Due.Name = "Due";
+            this.Due.ReadOnly = true;
+            // 
+            // Paid
+            // 
+            this.Paid.HeaderText = "Paid";
+            this.Paid.MinimumWidth = 6;
+            this.Paid.Name = "Paid";
+            this.Paid.ReadOnly = true;
             // 
             // groupBox2
             // 
@@ -154,9 +178,9 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox2.Controls.Add(this.dgvSummary);
             this.groupBox2.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox2.Location = new System.Drawing.Point(743, 19);
+            this.groupBox2.Location = new System.Drawing.Point(709, 19);
             this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(310, 197);
+            this.groupBox2.Size = new System.Drawing.Size(310, 278);
             this.groupBox2.TabIndex = 4;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "Summary";
@@ -175,7 +199,7 @@
             this.dgvSummary.RowHeadersWidth = 51;
             this.dgvSummary.RowTemplate.Height = 35;
             this.dgvSummary.RowTemplate.ReadOnly = true;
-            this.dgvSummary.Size = new System.Drawing.Size(304, 169);
+            this.dgvSummary.Size = new System.Drawing.Size(304, 250);
             this.dgvSummary.TabIndex = 2;
             // 
             // PaymentName
@@ -207,7 +231,7 @@
             this.panel3.Controls.Add(this.tbPaymentAmt);
             this.panel3.Location = new System.Drawing.Point(356, 32);
             this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(363, 97);
+            this.panel3.Size = new System.Drawing.Size(329, 97);
             this.panel3.TabIndex = 3;
             // 
             // tbPaymentAmt
@@ -216,7 +240,7 @@
             this.tbPaymentAmt.Location = new System.Drawing.Point(0, 0);
             this.tbPaymentAmt.Multiline = true;
             this.tbPaymentAmt.Name = "tbPaymentAmt";
-            this.tbPaymentAmt.Size = new System.Drawing.Size(363, 97);
+            this.tbPaymentAmt.Size = new System.Drawing.Size(329, 97);
             this.tbPaymentAmt.TabIndex = 0;
             // 
             // panelInput
@@ -227,7 +251,7 @@
             this.panelInput.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(255)))), ((int)(((byte)(192)))));
             this.panelInput.Location = new System.Drawing.Point(356, 135);
             this.panelInput.Name = "panelInput";
-            this.panelInput.Size = new System.Drawing.Size(363, 298);
+            this.panelInput.Size = new System.Drawing.Size(329, 379);
             this.panelInput.TabIndex = 1;
             // 
             // panel2
@@ -240,7 +264,7 @@
             this.panel2.Controls.Add(this.flpPaymentTypes);
             this.panel2.Location = new System.Drawing.Point(13, 32);
             this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(321, 401);
+            this.panel2.Size = new System.Drawing.Size(321, 482);
             this.panel2.TabIndex = 0;
             // 
             // cboSplitMembers
@@ -264,20 +288,23 @@
             // 
             // panel4
             // 
+            this.panel4.Controls.Add(this.label3);
+            this.panel4.Controls.Add(this.tbWalletBalance);
+            this.panel4.Controls.Add(this.cboWallet);
             this.panel4.Controls.Add(this.tbRef);
             this.panel4.Controls.Add(this.tbPaymentMode);
             this.panel4.Controls.Add(this.label2);
             this.panel4.Controls.Add(this.label1);
             this.panel4.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.panel4.Location = new System.Drawing.Point(0, 311);
+            this.panel4.Location = new System.Drawing.Point(0, 340);
             this.panel4.Name = "panel4";
-            this.panel4.Size = new System.Drawing.Size(321, 90);
+            this.panel4.Size = new System.Drawing.Size(321, 142);
             this.panel4.TabIndex = 2;
             // 
             // tbRef
             // 
             this.tbRef.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tbRef.Location = new System.Drawing.Point(175, 50);
+            this.tbRef.Location = new System.Drawing.Point(175, 102);
             this.tbRef.Name = "tbRef";
             this.tbRef.Size = new System.Drawing.Size(117, 33);
             this.tbRef.TabIndex = 3;
@@ -285,7 +312,7 @@
             // tbPaymentMode
             // 
             this.tbPaymentMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tbPaymentMode.Location = new System.Drawing.Point(175, 6);
+            this.tbPaymentMode.Location = new System.Drawing.Point(175, 9);
             this.tbPaymentMode.Name = "tbPaymentMode";
             this.tbPaymentMode.ReadOnly = true;
             this.tbPaymentMode.Size = new System.Drawing.Size(117, 33);
@@ -296,7 +323,7 @@
             this.label2.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label2.Location = new System.Drawing.Point(14, 56);
+            this.label2.Location = new System.Drawing.Point(14, 108);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(89, 21);
             this.label2.TabIndex = 1;
@@ -307,7 +334,7 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(14, 12);
+            this.label1.Location = new System.Drawing.Point(14, 15);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(125, 21);
             this.label1.TabIndex = 0;
@@ -319,7 +346,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.flpPaymentTypes.Location = new System.Drawing.Point(6, 48);
             this.flpPaymentTypes.Name = "flpPaymentTypes";
-            this.flpPaymentTypes.Size = new System.Drawing.Size(312, 257);
+            this.flpPaymentTypes.Size = new System.Drawing.Size(305, 286);
             this.flpPaymentTypes.TabIndex = 1;
             // 
             // groupBox5
@@ -332,9 +359,9 @@
             this.groupBox5.Controls.Add(this.metroButton2);
             this.groupBox5.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.groupBox5.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox5.Location = new System.Drawing.Point(20, 518);
+            this.groupBox5.Location = new System.Drawing.Point(20, 599);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(1074, 73);
+            this.groupBox5.Size = new System.Drawing.Size(1040, 73);
             this.groupBox5.TabIndex = 13;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "ACTIONS";
@@ -342,7 +369,7 @@
             // mtTables
             // 
             this.mtTables.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.mtTables.Location = new System.Drawing.Point(774, 17);
+            this.mtTables.Location = new System.Drawing.Point(740, 17);
             this.mtTables.Name = "mtTables";
             this.mtTables.Size = new System.Drawing.Size(110, 50);
             this.mtTables.TabIndex = 31;
@@ -354,7 +381,7 @@
             // mtKitchen
             // 
             this.mtKitchen.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.mtKitchen.Location = new System.Drawing.Point(915, 17);
+            this.mtKitchen.Location = new System.Drawing.Point(881, 17);
             this.mtKitchen.Name = "mtKitchen";
             this.mtKitchen.Size = new System.Drawing.Size(110, 50);
             this.mtKitchen.TabIndex = 30;
@@ -405,32 +432,40 @@
             this.metroButton2.TabIndex = 12;
             this.metroButton2.Text = "metroButton2";
             // 
-            // Member
+            // cboWallet
             // 
-            this.Member.HeaderText = "Member";
-            this.Member.MinimumWidth = 6;
-            this.Member.Name = "Member";
-            this.Member.ReadOnly = true;
+            this.cboWallet.FormattingEnabled = true;
+            this.cboWallet.Location = new System.Drawing.Point(175, 9);
+            this.cboWallet.Name = "cboWallet";
+            this.cboWallet.Size = new System.Drawing.Size(117, 33);
+            this.cboWallet.TabIndex = 5;
+            this.cboWallet.SelectedIndexChanged += new System.EventHandler(this.cboWallet_SelectedIndexChanged);
             // 
-            // Due
+            // tbWalletBalance
             // 
-            this.Due.HeaderText = "Due";
-            this.Due.MinimumWidth = 6;
-            this.Due.Name = "Due";
-            this.Due.ReadOnly = true;
+            this.tbWalletBalance.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.tbWalletBalance.Location = new System.Drawing.Point(175, 52);
+            this.tbWalletBalance.Name = "tbWalletBalance";
+            this.tbWalletBalance.Size = new System.Drawing.Size(117, 33);
+            this.tbWalletBalance.TabIndex = 6;
+            this.tbWalletBalance.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
-            // Paid
+            // label3
             // 
-            this.Paid.HeaderText = "Paid";
-            this.Paid.MinimumWidth = 6;
-            this.Paid.Name = "Paid";
-            this.Paid.ReadOnly = true;
+            this.label3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.label3.AutoSize = true;
+            this.label3.Font = new System.Drawing.Font("Segoe UI Semibold", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(14, 58);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(70, 21);
+            this.label3.TabIndex = 7;
+            this.label3.Text = "Balance:";
             // 
             // frmSplitPayment
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 21F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1114, 611);
+            this.ClientSize = new System.Drawing.Size(1080, 692);
             this.Controls.Add(this.label4);
             this.Controls.Add(this.tbTableName);
             this.Controls.Add(this.panel1);
@@ -491,5 +526,8 @@
         private System.Windows.Forms.DataGridViewTextBoxColumn Member;
         private System.Windows.Forms.DataGridViewTextBoxColumn Due;
         private System.Windows.Forms.DataGridViewTextBoxColumn Paid;
+        private System.Windows.Forms.ComboBox cboWallet;
+        private System.Windows.Forms.TextBox tbWalletBalance;
+        private System.Windows.Forms.Label label3;
     }
 }

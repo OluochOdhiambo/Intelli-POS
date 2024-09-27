@@ -36,6 +36,8 @@ namespace CCPos.Forms
         {
             frmTableZone frmTableZone = new frmTableZone();
             frmTableZone.Show();
+
+            //this.Close();
         }
 
         private void frmDashboard_Load(object sender, EventArgs e)
@@ -60,12 +62,32 @@ namespace CCPos.Forms
         {
             frmPermission frmPermission = new frmPermission();
             frmPermission.Show();
+
+            //this.Close();
         }
 
         private void metroTile1_Click(object sender, EventArgs e)
         {
             frmKitchen frmKitchen = new frmKitchen();
             frmKitchen.Show();
+
+            //this.Close();
+        }
+
+        private void metroTile3_Click(object sender, EventArgs e)
+        {
+            frmEventsScreen frmEventsScreen = new frmEventsScreen();
+            frmEventsScreen.Show();
+
+            //this.Close();
+        }
+
+        private void metroTile2_Click(object sender, EventArgs e)
+        {
+            frmConfig frmPrinter = new frmConfig();
+            frmPrinter.Show();
+
+            //this.Close();
         }
     }
 }

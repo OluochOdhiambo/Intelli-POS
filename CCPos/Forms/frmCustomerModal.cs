@@ -1,15 +1,9 @@
-﻿using CCPos.Modules;
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
+﻿using System;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Net.NetworkInformation;
-using System.Text;
-using System.Threading.Tasks;
+using CCPos.Modules;
 using System.Windows.Forms;
 using MetroFramework.Forms;
+using System.Drawing;
 
 namespace CCPos.Forms
 {
@@ -86,16 +80,16 @@ namespace CCPos.Forms
             {
                 if (_wipOrderID == 0)
                 {
-                    sql = $"select c.id MemberID, c.Name, c.memberNo MemberNo from cc_table_guests g inner join tbl_customer c on c.id = g.guestID where g.tableID = {_tableID} and g.orderID = {_orderID}";
+                    sql = $"select c.DCLink MemberID, c.Name, c.Account MemberNo from wiz_cc_table_guests g inner join Client c on c.DCLink = g.guestID where g.tableID = {_tableID} and g.orderID = {_orderID}";
                 }
                 else if (_orderID == 0)
                 {
-                    sql = $"select c.id MemberID, c.Name, c.memberNo MemberNo from cc_table_guests g inner join tbl_customer c on c.id = g.guestID where g.tableID = {_tableID} and g.wipOrderID = {_wipOrderID}";
+                    sql = $"select c.DCLink MemberID, c.Name, c.Account MemberNo from wiz_cc_table_guests g inner join Client c on c.DCLink = g.guestID where g.tableID = {_tableID} and g.wipOrderID = {_wipOrderID}";
                 }
 
                 guestMembers = _commonFunctions.LoadDatatable(sql);
 
-                if (guestMembers != null && guestMembers.Rows.Count > 0) 
+                if (guestMembers != null && guestMembers.Rows.Count > 0)
                 {
                     currentMember = guestMembers.Rows[0];
 
@@ -111,7 +105,7 @@ namespace CCPos.Forms
 
         private void LoadCustomers()
         {
-            sql = "select id MemberID, Name, memberNo MemberNo from tbl_customer c where c.peopletype = 'Customer';";
+            sql = "select c.DCLink MemberID, c.Name, c.Account MemberNo from Client c;";
             members = _commonFunctions.LoadDatatable(sql);
 
             _commonFunctions.LoadComboBox(sql, cboMember, "MemberID", "Name");
@@ -119,6 +113,12 @@ namespace CCPos.Forms
 
         private void btnAdd_Click(object sender, EventArgs e)
         {
+            if (tbGuestCount.Text == "")
+            {
+                MessageBox.Show("Please add the expected number of guests.", "INFORMATION", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
             if (cboMember.SelectedIndex == -1) { return; }
 
             string customerName = cboMember.Text;
@@ -149,65 +149,83 @@ namespace CCPos.Forms
 
         private void btnProceed_Click(object sender, EventArgs e)
         {
-            if (_memberID == 0)
+            if (_wipOrderID != 0 || _orderID != 0)
             {
-                MessageBox.Show("Please assign atleast 1 member to the table.", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            if (isReservation)
-            {
-                // check permissions
-                frmPermission frmPermission = new frmPermission();
-
-                if (frmPermission.ShowDialog() == DialogResult.OK)
-                {
-                    // create order in wip with status "Reserved"
-                    sql = $"INSERT INTO cc_wip_order (tableID, customerID, orderTotal, taxTotal, totalPayable, agentID, orderStatus) OUTPUT INSERTED.orderID VALUES ({_tableID},{_memberID}, 0, 0, 0, 456, 'Reserved');";
-
-                    _wipOrderID = _commonFunctions.ExecuteScalarAndReturnId(sql);
-
-                    // save guests to guest table
-                    foreach (DataRow guest in guestMembers.Rows)
-                    {
-                        sql = $"insert into cc_table_guests (guestID, tableID, wipOrderID) VALUES ({Convert.ToInt32(guest["MemberID"])}, {_tableID}, {_wipOrderID})";
-                        success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
-                    }
-
-                    MessageBox.Show($"Table reserved successfully.", "INFORMATION", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-                    // Open table screen
-                    frmTableZone frmTableZone = new frmTableZone();
-                    frmTableZone.Show();
-
-                    this.Close();
-                }
-                else
-                {
-                    MessageBox.Show("Table reservation denied.", "PERMISSION DENIED", MessageBoxButtons.OK, MessageBoxIcon.Stop);
-                }
-            }
-            else
-            {
-                if (_orderID == 0 && _wipOrderID == 0)
-                {
-                    // create an order in order_wip
-                    sql = $"INSERT INTO cc_wip_order (tableID, customerID, orderTotal, taxTotal, totalPayable, agentID) OUTPUT INSERTED.orderID VALUES ({_tableID},{_memberID}, 0, 0, 0, 456);";
-
-                    _wipOrderID = _commonFunctions.ExecuteScalarAndReturnId(sql);
-
-                    // save guests to guest table
-                    foreach (DataRow guest in guestMembers.Rows)
-                    {
-                        sql = $"insert into cc_table_guests (guestID, tableID, wipOrderID) VALUES ({Convert.ToInt32(guest["MemberID"])}, {_tableID}, {_wipOrderID})";
-                        success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
-                    }
-                }
-
                 frmSales frmSales = new frmSales(_tableID, _locationID, _memberID, _wipOrderID, _orderID);
                 frmSales.Show();
 
                 this.Close();
+            }
+            else
+            {
+                if (tbGuestCount.Text == "")
+                {
+                    MessageBox.Show("Please provide the expected number of guests.", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                int bookedGuests = Convert.ToInt32(tbGuestCount.Text);
+
+                if (_memberID == 0)
+                {
+                    MessageBox.Show("Please assign atleast 1 member to the table.", "ERROR", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                if (isReservation)
+                {
+                    // check permissions
+                    frmPermission frmPermission = new frmPermission();
+
+                    if (frmPermission.ShowDialog() == DialogResult.OK)
+                    {
+                        // create order in wip with status "Reserved"
+                        sql = $"INSERT INTO wiz_cc_wip_order (tableID, customerID, bookedCapacity, orderTotal, taxTotal, totalPayable, agentID, orderStatus) OUTPUT INSERTED.orderID VALUES ({_tableID},{_memberID}, {bookedGuests}, 0, 0, 0, 456, 'Reserved');";
+
+                        _wipOrderID = _commonFunctions.ExecuteScalarAndReturnId(sql);
+
+                        // save guests to guest table
+                        foreach (DataRow guest in guestMembers.Rows)
+                        {
+                            sql = $"insert into wiz_cc_table_guests (guestID, tableID, wipOrderID) VALUES ({Convert.ToInt32(guest["MemberID"])}, {_tableID}, {_wipOrderID})";
+                            success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
+                        }
+
+                        MessageBox.Show($"Table reserved successfully.", "INFORMATION", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                        // Open table screen
+                        frmTableZone frmTableZone = new frmTableZone();
+                        frmTableZone.Show();
+
+                        this.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Table reservation denied.", "PERMISSION DENIED", MessageBoxButtons.OK, MessageBoxIcon.Stop);
+                    }
+                }
+                else
+                {
+                    if (_orderID == 0 && _wipOrderID == 0)
+                    {
+                        // create an order in order_wip
+                        sql = $"INSERT INTO wiz_cc_wip_order (tableID, customerID, bookedCapacity, orderTotal, taxTotal, totalPayable, agentID) OUTPUT INSERTED.orderID VALUES ({_tableID},{_memberID}, {bookedGuests}, 0, 0, 0, 456);";
+
+                        _wipOrderID = _commonFunctions.ExecuteScalarAndReturnId(sql);
+
+                        // save guests to guest table
+                        foreach (DataRow guest in guestMembers.Rows)
+                        {
+                            sql = $"insert into wiz_cc_table_guests (guestID, tableID, wipOrderID) VALUES ({Convert.ToInt32(guest["MemberID"])}, {_tableID}, {_wipOrderID})";
+                            success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
+                        }
+                    }
+
+                    frmSales frmSales = new frmSales(_tableID, _locationID, _memberID, _wipOrderID, _orderID);
+                    frmSales.Show();
+
+                    this.Close();
+                }
             }
         }
 
@@ -221,6 +239,11 @@ namespace CCPos.Forms
             {
                 isReservation = false;
             }
+        }
+
+        private void dgvCustomers_RowPostPaint(object sender, DataGridViewRowPostPaintEventArgs e)
+        {
+            _commonFunctions.DisplayGridRowIndex(dgvCustomers, e);
         }
     }
 }

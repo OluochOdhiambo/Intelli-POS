@@ -29,6 +29,9 @@
         private void InitializeComponent()
         {
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupBox5 = new System.Windows.Forms.GroupBox();
+            this.tbGuestCount = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.btnProceed = new System.Windows.Forms.Button();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
             this.cbReserve = new System.Windows.Forms.CheckBox();
@@ -42,6 +45,7 @@
             this.MemberNo = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.Name = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.groupBox1.SuspendLayout();
+            this.groupBox5.SuspendLayout();
             this.groupBox4.SuspendLayout();
             this.groupBox3.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -53,6 +57,7 @@
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.groupBox5);
             this.groupBox1.Controls.Add(this.btnProceed);
             this.groupBox1.Controls.Add(this.groupBox4);
             this.groupBox1.Controls.Add(this.groupBox3);
@@ -66,6 +71,34 @@
             this.groupBox1.TabIndex = 0;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Customer";
+            // 
+            // groupBox5
+            // 
+            this.groupBox5.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox5.Controls.Add(this.tbGuestCount);
+            this.groupBox5.Controls.Add(this.label2);
+            this.groupBox5.Location = new System.Drawing.Point(467, 37);
+            this.groupBox5.Name = "groupBox5";
+            this.groupBox5.Size = new System.Drawing.Size(518, 105);
+            this.groupBox5.TabIndex = 4;
+            this.groupBox5.TabStop = false;
+            this.groupBox5.Text = "Guest Attendees";
+            // 
+            // tbGuestCount
+            // 
+            this.tbGuestCount.Location = new System.Drawing.Point(137, 40);
+            this.tbGuestCount.Name = "tbGuestCount";
+            this.tbGuestCount.Size = new System.Drawing.Size(100, 32);
+            this.tbGuestCount.TabIndex = 8;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(10, 43);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(58, 25);
+            this.label2.TabIndex = 7;
+            this.label2.Text = "Total:";
             // 
             // btnProceed
             // 
@@ -82,9 +115,9 @@
             // 
             this.groupBox4.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox4.Controls.Add(this.cbReserve);
-            this.groupBox4.Location = new System.Drawing.Point(467, 237);
+            this.groupBox4.Location = new System.Drawing.Point(467, 312);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(518, 178);
+            this.groupBox4.Size = new System.Drawing.Size(518, 103);
             this.groupBox4.TabIndex = 2;
             this.groupBox4.TabStop = false;
             this.groupBox4.Text = "Reservations";
@@ -94,7 +127,7 @@
             this.cbReserve.AutoSize = true;
             this.cbReserve.Location = new System.Drawing.Point(15, 49);
             this.cbReserve.Name = "cbReserve";
-            this.cbReserve.Size = new System.Drawing.Size(221, 35);
+            this.cbReserve.Size = new System.Drawing.Size(185, 29);
             this.cbReserve.TabIndex = 6;
             this.cbReserve.Text = "Make Reservation";
             this.cbReserve.UseVisualStyleBackColor = true;
@@ -102,23 +135,24 @@
             // 
             // groupBox3
             // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.groupBox3.Controls.Add(this.btnRemove);
             this.groupBox3.Controls.Add(this.btnAdd);
             this.groupBox3.Controls.Add(this.cboMember);
             this.groupBox3.Controls.Add(this.label1);
             this.groupBox3.Font = new System.Drawing.Font("Segoe UI Semibold", 13.8F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.groupBox3.Location = new System.Drawing.Point(467, 37);
+            this.groupBox3.Location = new System.Drawing.Point(467, 142);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(518, 194);
+            this.groupBox3.Size = new System.Drawing.Size(518, 164);
             this.groupBox3.TabIndex = 1;
             this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Guests";
+            this.groupBox3.Text = "Members";
             // 
             // btnRemove
             // 
             this.btnRemove.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.btnRemove.Location = new System.Drawing.Point(302, 119);
+            this.btnRemove.Location = new System.Drawing.Point(302, 104);
             this.btnRemove.Name = "btnRemove";
             this.btnRemove.Size = new System.Drawing.Size(163, 50);
             this.btnRemove.TabIndex = 9;
@@ -128,7 +162,7 @@
             // btnAdd
             // 
             this.btnAdd.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.btnAdd.Location = new System.Drawing.Point(60, 119);
+            this.btnAdd.Location = new System.Drawing.Point(60, 104);
             this.btnAdd.Name = "btnAdd";
             this.btnAdd.Size = new System.Drawing.Size(163, 50);
             this.btnAdd.TabIndex = 8;
@@ -141,7 +175,7 @@
             this.cboMember.FormattingEnabled = true;
             this.cboMember.Location = new System.Drawing.Point(137, 51);
             this.cboMember.Name = "cboMember";
-            this.cboMember.Size = new System.Drawing.Size(270, 39);
+            this.cboMember.Size = new System.Drawing.Size(270, 33);
             this.cboMember.TabIndex = 7;
             // 
             // label1
@@ -149,7 +183,7 @@
             this.label1.AutoSize = true;
             this.label1.Location = new System.Drawing.Point(9, 59);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(109, 31);
+            this.label1.Size = new System.Drawing.Size(91, 25);
             this.label1.TabIndex = 6;
             this.label1.Text = "Member:";
             // 
@@ -173,12 +207,13 @@
             this.MemberNo,
             this.Name});
             this.dgvCustomers.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.dgvCustomers.Location = new System.Drawing.Point(3, 34);
+            this.dgvCustomers.Location = new System.Drawing.Point(3, 28);
             this.dgvCustomers.Name = "dgvCustomers";
             this.dgvCustomers.RowHeadersWidth = 51;
             this.dgvCustomers.RowTemplate.Height = 45;
-            this.dgvCustomers.Size = new System.Drawing.Size(447, 410);
+            this.dgvCustomers.Size = new System.Drawing.Size(447, 416);
             this.dgvCustomers.TabIndex = 0;
+            this.dgvCustomers.RowPostPaint += new System.Windows.Forms.DataGridViewRowPostPaintEventHandler(this.dgvCustomers_RowPostPaint);
             // 
             // MemberNo
             // 
@@ -194,7 +229,7 @@
             // 
             // frmCustomerModal
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 31F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(10F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1189, 644);
             this.Controls.Add(this.groupBox1);
@@ -202,6 +237,8 @@
             this.Margin = new System.Windows.Forms.Padding(5, 6, 5, 6);
             //this.Name = "frmCustomerModal";
             this.groupBox1.ResumeLayout(false);
+            this.groupBox5.ResumeLayout(false);
+            this.groupBox5.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
             this.groupBox3.ResumeLayout(false);
@@ -227,5 +264,8 @@
         private System.Windows.Forms.GroupBox groupBox4;
         private System.Windows.Forms.Button btnRemove;
         private System.Windows.Forms.Button btnAdd;
+        private System.Windows.Forms.GroupBox groupBox5;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.TextBox tbGuestCount;
     }
 }

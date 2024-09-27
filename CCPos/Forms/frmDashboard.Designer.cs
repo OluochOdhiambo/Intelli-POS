@@ -85,7 +85,7 @@
             this.tableLayoutPanel1.ColumnCount = 3;
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50.09862F));
             this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 49.90138F));
-            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 191F));
+            this.tableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 194F));
             this.tableLayoutPanel1.Controls.Add(this.metroTile8, 2, 2);
             this.tableLayoutPanel1.Controls.Add(this.metroTile7, 1, 2);
             this.tableLayoutPanel1.Controls.Add(this.metroTile6, 0, 2);
@@ -109,10 +109,10 @@
             // metroTile8
             // 
             this.metroTile8.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.metroTile8.Location = new System.Drawing.Point(387, 273);
+            this.metroTile8.Location = new System.Drawing.Point(384, 273);
             this.metroTile8.Margin = new System.Windows.Forms.Padding(8);
             this.metroTile8.Name = "metroTile8";
-            this.metroTile8.Size = new System.Drawing.Size(176, 94);
+            this.metroTile8.Size = new System.Drawing.Size(179, 94);
             this.metroTile8.TabIndex = 26;
             this.metroTile8.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.metroTile8.TileTextFontSize = MetroFramework.MetroTileTextSize.Tall;
@@ -121,10 +121,10 @@
             // metroTile7
             // 
             this.metroTile7.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.metroTile7.Location = new System.Drawing.Point(198, 273);
+            this.metroTile7.Location = new System.Drawing.Point(196, 273);
             this.metroTile7.Margin = new System.Windows.Forms.Padding(8);
             this.metroTile7.Name = "metroTile7";
-            this.metroTile7.Size = new System.Drawing.Size(173, 94);
+            this.metroTile7.Size = new System.Drawing.Size(172, 94);
             this.metroTile7.TabIndex = 25;
             this.metroTile7.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.metroTile7.TileTextFontSize = MetroFramework.MetroTileTextSize.Tall;
@@ -136,7 +136,7 @@
             this.metroTile6.Location = new System.Drawing.Point(8, 273);
             this.metroTile6.Margin = new System.Windows.Forms.Padding(8);
             this.metroTile6.Name = "metroTile6";
-            this.metroTile6.Size = new System.Drawing.Size(174, 94);
+            this.metroTile6.Size = new System.Drawing.Size(172, 94);
             this.metroTile6.TabIndex = 24;
             this.metroTile6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.metroTile6.TileTextFontSize = MetroFramework.MetroTileTextSize.Tall;
@@ -145,10 +145,10 @@
             // metroTile5
             // 
             this.metroTile5.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.metroTile5.Location = new System.Drawing.Point(387, 135);
+            this.metroTile5.Location = new System.Drawing.Point(384, 135);
             this.metroTile5.Margin = new System.Windows.Forms.Padding(8);
             this.metroTile5.Name = "metroTile5";
-            this.metroTile5.Size = new System.Drawing.Size(176, 122);
+            this.metroTile5.Size = new System.Drawing.Size(179, 122);
             this.metroTile5.TabIndex = 23;
             this.metroTile5.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.metroTile5.TileTextFontSize = MetroFramework.MetroTileTextSize.Tall;
@@ -157,23 +157,24 @@
             // metroTile3
             // 
             this.metroTile3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.metroTile3.Location = new System.Drawing.Point(387, 8);
+            this.metroTile3.Location = new System.Drawing.Point(384, 8);
             this.metroTile3.Margin = new System.Windows.Forms.Padding(8);
             this.metroTile3.Name = "metroTile3";
-            this.metroTile3.Size = new System.Drawing.Size(176, 111);
+            this.metroTile3.Size = new System.Drawing.Size(179, 111);
             this.metroTile3.TabIndex = 22;
-            this.metroTile3.Text = "INVENTORY";
+            this.metroTile3.Text = "EVENTS";
             this.metroTile3.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.metroTile3.TileTextFontSize = MetroFramework.MetroTileTextSize.Tall;
             this.metroTile3.TileTextFontWeight = MetroFramework.MetroTileTextWeight.Bold;
+            this.metroTile3.Click += new System.EventHandler(this.metroTile3_Click);
             // 
             // metroTile1
             // 
             this.metroTile1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.metroTile1.Location = new System.Drawing.Point(198, 8);
+            this.metroTile1.Location = new System.Drawing.Point(196, 8);
             this.metroTile1.Margin = new System.Windows.Forms.Padding(8);
             this.metroTile1.Name = "metroTile1";
-            this.metroTile1.Size = new System.Drawing.Size(173, 111);
+            this.metroTile1.Size = new System.Drawing.Size(172, 111);
             this.metroTile1.TabIndex = 21;
             this.metroTile1.Text = "KITCHEN";
             this.metroTile1.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -184,14 +185,16 @@
             // metroTile2
             // 
             this.metroTile2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.metroTile2.Location = new System.Drawing.Point(198, 135);
+            this.metroTile2.Location = new System.Drawing.Point(196, 135);
             this.metroTile2.Margin = new System.Windows.Forms.Padding(8);
             this.metroTile2.Name = "metroTile2";
-            this.metroTile2.Size = new System.Drawing.Size(173, 122);
+            this.metroTile2.Size = new System.Drawing.Size(172, 122);
             this.metroTile2.TabIndex = 20;
+            this.metroTile2.Text = "CONFIGURATION";
             this.metroTile2.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.metroTile2.TileTextFontSize = MetroFramework.MetroTileTextSize.Tall;
             this.metroTile2.TileTextFontWeight = MetroFramework.MetroTileTextWeight.Bold;
+            this.metroTile2.Click += new System.EventHandler(this.metroTile2_Click);
             // 
             // mtPermissions
             // 
@@ -199,9 +202,8 @@
             this.mtPermissions.Location = new System.Drawing.Point(8, 135);
             this.mtPermissions.Margin = new System.Windows.Forms.Padding(8);
             this.mtPermissions.Name = "mtPermissions";
-            this.mtPermissions.Size = new System.Drawing.Size(174, 122);
+            this.mtPermissions.Size = new System.Drawing.Size(172, 122);
             this.mtPermissions.TabIndex = 19;
-            this.mtPermissions.Text = "PERMISSIONS";
             this.mtPermissions.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.mtPermissions.TileTextFontSize = MetroFramework.MetroTileTextSize.Tall;
             this.mtPermissions.TileTextFontWeight = MetroFramework.MetroTileTextWeight.Bold;
@@ -213,7 +215,7 @@
             this.metroTilePOS.Location = new System.Drawing.Point(8, 8);
             this.metroTilePOS.Margin = new System.Windows.Forms.Padding(8);
             this.metroTilePOS.Name = "metroTilePOS";
-            this.metroTilePOS.Size = new System.Drawing.Size(174, 111);
+            this.metroTilePOS.Size = new System.Drawing.Size(172, 111);
             this.metroTilePOS.TabIndex = 16;
             this.metroTilePOS.Text = "POINT OF SALE";
             this.metroTilePOS.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;

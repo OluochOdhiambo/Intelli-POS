@@ -18,7 +18,9 @@ namespace CCPos.Modules
 {
     public class CommonFunctions
     {
-        private string connString = "Data Source=(local);Initial Catalog=********; User ID=sa;Password=***********";
+        private string connString = "Data Source=(local);Initial Catalog=CapitalClub; User ID=sa;Password=12345678900";
+
+        public string GetConnectionString() { return connString; }
 
         public void LoadDataGridFromDataTable(DataTable dt, DataGridView dgv, string[] cols, string[] hiddenCols)
         {
@@ -289,6 +291,64 @@ namespace CCPos.Modules
                 int rowsAffected = cmd.ExecuteNonQuery();
 
                 return rowsAffected > 0;
+            }
+        }
+
+        public bool ExecuteScalarWithTransaction(string sql, SqlTransaction transaction)
+        {
+            using (SqlCommand cmd = new SqlCommand(sql, transaction.Connection, transaction))
+            {
+                try
+                {
+                    int rowsAffected = cmd.ExecuteNonQuery();
+                    return rowsAffected > 0;  // Success if rows were affected
+                }
+                catch (Exception ex)
+                {
+                    // Optionally, log the exception or handle it as needed
+                    Console.WriteLine($"Error executing SQL: {ex.Message}");
+                    return false;  // Return false if an exception occurred
+                }
+            }
+        }
+
+        public int ExecuteScalarWithTransactionReturnID(string sql, SqlTransaction transaction)
+        {
+            using (SqlCommand cmd = new SqlCommand(sql, transaction.Connection, transaction))
+            {
+                try
+                {
+                    // Execute the command and return the scalar result (e.g., the ID of the inserted record)
+                    object result = cmd.ExecuteScalar();
+
+                    // Convert the result to an int, or handle null values properly
+                    if (result != null && int.TryParse(result.ToString(), out int id))
+                    {
+                        return id;  // Return the ID
+                    }
+                    else
+                    {
+                        return -1;  // Return -1 if no valid ID was returned
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Optionally, log the exception or handle it as needed
+                    Console.WriteLine($"Error executing SQL: {ex.Message}");
+                    return -1;  // Return -1 if an exception occurred
+                }
+            }
+        }
+
+        public void DisplayGridRowIndex(DataGridView dgv, DataGridViewRowPostPaintEventArgs e)
+        {
+            using (SolidBrush brush = new SolidBrush(dgv.RowHeadersDefaultCellStyle.ForeColor))
+            {
+                e.Graphics.DrawString((e.RowIndex + 1).ToString(),
+                    dgv.DefaultCellStyle.Font,
+                    brush,
+                    e.RowBounds.Location.X + 10,
+                    e.RowBounds.Location.Y + 4);
             }
         }
     }

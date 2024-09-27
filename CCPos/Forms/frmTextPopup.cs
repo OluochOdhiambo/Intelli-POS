@@ -84,7 +84,7 @@ namespace CCPos.Forms
             }
 
             // update product row in cc_wip_order
-            sql = $"update cc_wip_order_details set [{column}] = '{tbInput.Text}', [{boolCol}] = {1} where itemID = {_productID} and orderID = {_wipOrderID}";
+            sql = $"update wiz_cc_wip_order_details set [{column}] = '{tbInput.Text}', [{boolCol}] = {1} where itemID = {_productID} and orderID = {_wipOrderID}";
             success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
 
             this.DialogResult = DialogResult.OK;

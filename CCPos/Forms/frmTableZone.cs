@@ -55,7 +55,8 @@ namespace CCPos.Forms
         public void LoadLocationButtons()
         {
             // Get the products from the database
-            sql = "select locID LocationID, locName LocationName from cc_locations;";
+            //sql = "select locID LocationID, locName LocationName from cc_locations;";
+            sql = "select WhseLink LocationID, Code LocationCode, Name LocationName from WhseMst;";
             locations = _commonFunctions.LoadDatatable(sql);
 
             buttonInfo = "LocationName|LocationID|150|100|false";
@@ -69,7 +70,7 @@ namespace CCPos.Forms
             // clear flp panel
             flpTables.Controls.Clear();
 
-            sql = $"SELECT t.tableID AS TableID, t.tableName AS TableName, t.capacity AS Capacity, w.customerID WIPCustomerID, o.customerID CustomerID, w.orderID WIPOrderID, w.orderStatus AS WIPOrderStatus, o.orderID OrderID, o.orderStatus AS OrderStatus, CASE WHEN w.orderStatus IS NOT NULL OR o.orderStatus IS NOT NULL THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS HasBookings FROM cc_tablemst t INNER JOIN cc_locations l ON t.locationID = l.locID LEFT JOIN cc_wip_order w ON w.tableID = t.tableID AND w.orderStatus <> 'Paid' LEFT JOIN cc_order o ON o.tableID = t.tableID AND o.orderStatus <> 'Paid' WHERE l.locID = {locationID};";
+            sql = $"SELECT t.tableID AS TableID, t.tableName AS TableName, t.capacity AS Capacity, w.bookedCapacity WIPBookedCapacity, o.bookedCapacity BookedCapacity, w.customerID WIPCustomerID, o.customerID CustomerID, w.orderID WIPOrderID, w.orderStatus AS WIPOrderStatus, o.orderID OrderID, o.orderStatus AS OrderStatus, CASE WHEN w.orderStatus IS NOT NULL OR o.orderStatus IS NOT NULL THEN CAST(1 AS BIT) ELSE CAST(0 AS BIT) END AS HasBookings FROM wiz_cc_tablemst t INNER JOIN WhseMst m ON t.locationID = m.WhseLink LEFT JOIN wiz_cc_wip_order w ON w.tableID = t.tableID AND w.orderStatus <> 'Paid' LEFT JOIN wiz_cc_order o ON o.tableID = t.tableID AND o.orderStatus <> 'Paid' WHERE m.WhseLink = {locationID};";
 
             tables = _commonFunctions.LoadDatatable(sql);
 
@@ -81,15 +82,17 @@ namespace CCPos.Forms
                 int tableID = Convert.ToInt32(row["TableID"]);
                 string tableName = row["TableName"].ToString();
                 int quantity = Convert.ToInt32(row["Capacity"]);
+                int bookedCapacity = row["BookedCapacity"] == DBNull.Value ? 0 : Convert.ToInt32(row["BookedCapacity"]);
+                int wipBookedCapacity = row["WIPBookedCapacity"] == DBNull.Value ? 0 : Convert.ToInt32(row["WIPBookedCapacity"]);
                 string orderStatus = row["OrderStatus"] == DBNull.Value ? null : row["OrderStatus"].ToString();
                 string wipOrderStatus = row["WIPOrderStatus"] == DBNull.Value ? null : row["WIPOrderStatus"].ToString();
 
                 string finalStatus = !string.IsNullOrEmpty(orderStatus) ? orderStatus : wipOrderStatus;
-
+                int finalBookedCapacity = bookedCapacity != 0 ? bookedCapacity : wipBookedCapacity;
 
                 string tableDetailInfo = $"{tableID}-{tableName}";
 
-                Panel newOrderItemPanel = CreateTablePanel(tableDetailInfo, panelWidth, tableName, quantity, 4, finalStatus);
+                Panel newOrderItemPanel = CreateTablePanel(tableDetailInfo, panelWidth, tableName, quantity, finalBookedCapacity, finalStatus);
 
                 flpTables.Controls.Add(newOrderItemPanel);
             }

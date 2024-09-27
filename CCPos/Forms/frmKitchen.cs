@@ -183,7 +183,7 @@ namespace CCPos.Forms
                 }
 
                 // update item ready status
-                sql = $"UPDATE cc_order_details SET isReady = 1 WHERE odID = {detailId}";
+                sql = $"UPDATE wiz_cc_order_details SET isReady = 1 WHERE odID = {detailId}";
                 success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
 
                 if (success) {
@@ -201,7 +201,7 @@ namespace CCPos.Forms
 
                 if (allReady)
                 {
-                    sql = $"UPDATE cc_order SET orderStatus = 'Ready' WHERE orderID = {orderId};";
+                    sql = $"UPDATE wiz_cc_order SET orderStatus = 'Ready' WHERE orderID = {orderId};";
                     success = _commonFunctions.ExecuteScalarAndReturnBool(sql);
 
                     if (success)
@@ -220,12 +220,11 @@ namespace CCPos.Forms
             }
         }
 
-
         // Load order items
         private void LoadKitchenOrders()
         {
             // TODO: Add filter for exact logged in location
-            sql = $"select o.orderID OrderID, d.odID DetailID, o.orderTime OrderTime, d.itemID ProductID, p.product_name ProductName, d.qty Quantity, d.isReady IsReady, t.tableName TableName, l.locName LocationName, p.imagename Image from cc_order o inner join cc_order_details d on o.orderID = d.orderID inner join purchase p on p.product_id = d.itemID inner join cc_tablemst t on t.tableID = o.tableID inner join cc_locations l on l.locID = t.locationID where o.orderStatus = 'Preparation' and l.locID in (1,2,3,4,5,6,7,8,9,10) and d.isReady = 0 order by o.orderTime asc;";
+            sql = $"select o.orderID OrderID, d.odID DetailID, o.orderTime OrderTime, d.itemID ProductID, s.Description_1 ProductName, d.qty Quantity, d.isReady IsReady, t.tableName TableName, w.Name LocationName, i.imagename Image from wiz_cc_order o inner join wiz_cc_order_details d on o.orderID = d.orderID inner join StkItem s on s.StockLink = d.itemID inner join wiz_cc_tablemst t on t.tableID = o.tableID inner join WhseMst w on w.WhseLink = t.locationID left join wiz_cc_stkitem_info i on i.stocklink = s.StockLink where o.orderStatus = 'Preparation' and w.WhseLink in (3,4,5,6,7,8) and d.isReady = 0 order by o.orderTime asc;";
             kitchenOrders = _commonFunctions.LoadDatatable(sql);
 
             mainFlpPanel.Controls.Clear();
@@ -276,6 +275,5 @@ namespace CCPos.Forms
             frmDashboard frmDashboard = new frmDashboard();
             frmDashboard.Show();
         }
-
     }
 }
